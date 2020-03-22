@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чат</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+        <h5 class="my-0 mr-md-auto font-weight-normal">Company name</h5>
+        <nav class="my-2 my-md-0 mr-md-3">
+            <a class="p-2 text-dark" href="#">Features</a>
+            <a class="p-2 text-dark" href="#">Enterprise</a>
+            <a class="p-2 text-dark" href="#">Support</a>
+            <a class="p-2 text-dark" href="#">Pricing</a>
+        </nav>
+        <a class="btn btn-outline-primary" href="#">Sign up</a>
+    </div>
+    <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4">JS Chat</h1>
+        <p class="lead">JS | Socket.io | Express | Node.js</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <h3>Напишите сообщение</h3>
+                <form id="message-form">
+                    <label for="message">Сообщение</label>
+                    <textarea name="message" id="message" class="form-control" placeholder="Введите сообщение.." required></textarea>
+                    <br>
+                    <button type="submit" class="btn btn-success float-right">Отправить</button>
+                </form>
+            </div>
+            <div class="col-6">
+                <h3>Все сообщения:</h3>
+                <div id="all-messages">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(function(){
+            let name = prompt('Как тебя зовут?', '');
+            if(!name){
+                name = 'Аноним';
+            }
+
+            const socket = io.connect();
+            const form = $('#message-form');
+            const text = $('#message');
+            const messages = $('#all-messages');
+
+            form.submit(function(e){
+                e.preventDefault();
+                socket.emit('sendMes', name, text.val());
+                text.val('');
+            });
+
+            socket.on('addMes', function(data){
+                console.log(data);
+                messages.append(`
+                <div class="alert alert-primary">
+                    <h5>${data.name}</h5>
+                    <p>${data.msg}</p>
+                </div>
+                `);
+            });
+        });
+    </script>
+</body>
+</html>
