@@ -15,21 +15,22 @@ let users = [];
 let connections = [];
 
 io.sockets.on('connection', (socket) => {
-    console.log('ok');
+    console.log('Подключён успешно');
     
     connections.push(socket);
 
     socket.on('disconnect', (data) => {
         connections.splice(connections.indexOf(socket), 1);
-        console.log('off');
+        console.log('Отключён успешно');
         
     });
 
-    socket.on('sendMes', (name, msg) => {
+    socket.on('sendMes', (data) => {
 
         const object = {
-            name: name,
-            msg: msg
+            name: data.name,
+            msg: data.msg,
+            class: data.class
         }
         
         io.sockets.emit('addMes', object);

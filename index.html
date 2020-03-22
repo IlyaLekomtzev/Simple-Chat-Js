@@ -45,6 +45,32 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
+        const min = 1;
+		const max = 6;
+        const random = Math.floor(Math.random() * (max - min)) + min;
+        
+		let alertClass;
+		switch (random) {
+			case 1:
+				alertClass = 'secondary';
+				break;
+			case 2:
+				alertClass = 'danger';
+				break;
+			case 3:
+				alertClass = 'success';
+				break;
+			case 4:
+				alertClass = 'warning';
+				break;
+			case 5:
+				alertClass = 'info';
+				break;
+			case 6:
+				alertClass = 'light';
+				break;
+        }
+        
         $(function(){
             let name = prompt('Как тебя зовут?', '');
             if(!name){
@@ -58,14 +84,18 @@
 
             form.submit(function(e){
                 e.preventDefault();
-                socket.emit('sendMes', name, text.val());
+                const object = {
+                    name: name,
+                    msg: text.val(),
+                    class: alertClass
+                };
+                socket.emit('sendMes', object);
                 text.val('');
             });
 
             socket.on('addMes', function(data){
-                console.log(data);
                 messages.append(`
-                <div class="alert alert-primary">
+                <div class="alert alert-${data.class}">
                     <h5>${data.name}</h5>
                     <p>${data.msg}</p>
                 </div>
